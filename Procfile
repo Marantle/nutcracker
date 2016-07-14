@@ -1,1 +1,1 @@
-web: java -Dsliserver.port=$PORT -jar  build/libs/nutcracker-0.0.1-SNAPSHOT.war
+web: java -Dsliserver.port=$PORT -jar  target/nutcracker-0.0.1-SNAPSHOT.war
