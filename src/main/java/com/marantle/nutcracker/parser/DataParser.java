@@ -7,7 +7,11 @@ import com.marantle.nutcracker.model.WorkDay;
 import com.marantle.nutcracker.model.WorkDaySalary;
 import com.marantle.nutcracker.model.WorkShift;
 import com.marantle.nutcracker.util.MyUtilities;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -19,10 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * class for generating list of workshifts from a csv file
@@ -42,14 +43,23 @@ public class DataParser {
 	private List<WorkShift> shifts = new ArrayList<>();
 	private List<WorkDay> workDays = new ArrayList<>();
 	private List<WorkDaySalary> salaries = new ArrayList<>();
-
+	@Autowired
+	private ResourceLoader resourceLoader;
 
 
 	private void parseShiftsAndPersons()
 			throws IOException, URISyntaxException {
 
 		List<String> erroneusLines = new ArrayList<>();
-		Path filePath = getFilePath(fileName);
+		Path filePath = null;
+		//if not running with spring, resourceloader fails
+		if(Objects.isNull(resourceLoader)) {
+			filePath = getFilePath(fileName);
+		}
+		else {
+			filePath = getFile(fileName).toPath();
+		}
+		System.err.println(filePath);
 		if (Files.exists(filePath)) {
 			Files.readAllLines(filePath, charset).stream().skip(1).forEach((String lineInFile) -> {
 
@@ -92,6 +102,16 @@ public class DataParser {
 		URI fileUri = null;
 			fileUri = DataParser.class.getClassLoader().getResource(fileName).toURI();
 		return Paths.get(fileUri);
+	}
+	private File getFile(String fileName) throws URISyntaxException {
+		Resource resource = resourceLoader.getResource(fileName);
+			File dbAsFile = null;
+		try {
+			dbAsFile = resource.getFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return dbAsFile;
 	}
 
 	private void generateWorkDayData() {

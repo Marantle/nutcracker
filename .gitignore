@@ -8,3 +8,11 @@
 
 .idea_modules/
 
+build
+.gradle
+.idea
+out
+*.iml
+*.ipr
+*.iws
+.DS_Store

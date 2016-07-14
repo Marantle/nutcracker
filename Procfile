@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -jar  build/libs/nutcracker-0.0.1-SNAPSHOT.war
+web: java -Dserver.port=8080 -jar  build/libs/nutcracker-0.0.1-SNAPSHOT.war
