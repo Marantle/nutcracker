@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+    <title>What a title</title>
+
+    <!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
+</head>
+<body>
+<div class="container">
+    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+    <div th:if="${not #lists.isEmpty(dataList)}">
+        <table class="table table-striped">
+            <tr>
+                <th th:each="text : ${headerTexts}" th:text="${text}">test</th>
+            </tr>
+            <tr th:each="data : ${dataList}">
+                <td th:each="field : ${headerFields}" th:text="${data[field]}">test</td>
+
+            </tr>
+        </table>
+
+    </div>
+</div>
+
+</body>
+</html>
