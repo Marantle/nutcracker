@@ -61,11 +61,12 @@ public class NutRepo {
         workDays.clear();
     }
 
-    public List<WorkDay> getPersonsWorkDay(int personId, LocalDate date) {
+    public WorkDay getPersonsWorkDay(int personId, LocalDate date) {
         return listWorkDays()
                 .stream()
                 .filter(day -> day.getPersonId() == personId)
-                .collect(Collectors.toList());
+                .findFirst()
+                .get();
     }
 
     public List<WorkDay> getPersonsWorkDays(int personId) {
@@ -93,10 +94,18 @@ public class NutRepo {
                 .collect(Collectors.toList());
     }
 
-    public List<WorkShift> getPersonsWorkdays(int personId) {
+    public List<WorkShift> getPersonsWorkShifts(int personId) {
         return listWorkShifts()
                 .stream()
                 .filter(day -> day.getPersonId() == personId)
+                .collect(Collectors.toList());
+    }
+
+    public List<WorkShift> getPersonsWorkShifts(int personId, LocalDate date) {
+        return listWorkShifts()
+                .stream()
+                .filter(day -> day.getPersonId() == personId&&
+                        day.getWorkDate().equals(date))
                 .collect(Collectors.toList());
     }
 
