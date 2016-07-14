@@ -52,13 +52,7 @@ public class DataParser {
 
 		List<String> erroneusLines = new ArrayList<>();
 		Path filePath = null;
-		//if not running with spring, resourceloader fails
-		if(Objects.isNull(resourceLoader)) {
-			filePath = getFilePath(fileName);
-		}
-		else {
 			filePath = getFile(fileName).toPath();
-		}
 		System.err.println(filePath);
 		if (Files.exists(filePath)) {
 			Files.readAllLines(filePath, charset).stream().skip(1).forEach((String lineInFile) -> {
