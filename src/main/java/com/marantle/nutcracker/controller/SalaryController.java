@@ -33,9 +33,6 @@ public class SalaryController {
         map.put("overtimeCompensationFormatted", "Overtime compensation");
         map.put("totalUncompensatedSalaryFormatted", "Salary w/o compensation");
 
-
-        map.keySet().forEach(System.err::println);
-        map.values().forEach(System.err::println);
         model.addAttribute("headers", map);
         model.addAttribute("pageHeader", "All daily salaries");
         model.addAttribute("headerFields", map.keySet());
