@@ -16,9 +16,5 @@ public class NutcrackerConfiguration{
         return new DataParser();
     }
 
-    @Bean
-    public NutRepo createNutRepo() {
-        return NutRepo.getInstance();
-    }
 
 }

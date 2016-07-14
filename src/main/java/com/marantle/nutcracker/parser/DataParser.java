@@ -58,6 +58,7 @@ public class DataParser {
         List<String> fileLines;
         fileLines = getFileLines(fileName);
 
+        //skip the header line
         fileLines.stream().skip(1).forEach((String lineInFile) -> {
 
             String[] splitLine = lineInFile.split(",");
@@ -81,10 +82,10 @@ public class DataParser {
                 WorkShift shift = new WorkShift(personId, date, startDateTime, endDateTime);
                 this.shifts.add(shift);
             } catch (NumberFormatException e) {
-                System.out.printf("Unable to read id from line %s %n", lineInFile);
+                System.err.printf("Unable to read id from line %s %n", lineInFile);
                 erroneusLines.add(lineInFile);
             } catch (DateTimeParseException e) {
-                System.out.printf("Unable to read date or time from line %s %n", lineInFile);
+                System.err.printf("Unable to read date or time from line %s %n", lineInFile);
                 erroneusLines.add(lineInFile);
             }
         });

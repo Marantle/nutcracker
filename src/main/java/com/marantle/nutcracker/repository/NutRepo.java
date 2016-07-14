@@ -2,6 +2,7 @@ package com.marantle.nutcracker.repository;
 
 import com.marantle.nutcracker.model.*;
 import com.marantle.nutcracker.util.MyUtilities;
+import org.springframework.stereotype.Service;
 
 import static com.marantle.nutcracker.repository.DataHolder.*;
 
@@ -12,7 +13,9 @@ import java.util.stream.Collectors;
 /**
  * Class to expose dataholders data
  */
+@Service
 public class NutRepo {
+
 
     private static NutRepo nutRepo = new NutRepo();
 

@@ -1,6 +1,5 @@
 package com.marantle.nutcracker.parser;
 
-import com.marantle.nutcracker.NutcrackerApplication;
 import com.marantle.nutcracker.model.Person;
 import com.marantle.nutcracker.model.WorkDay;
 import com.marantle.nutcracker.model.WorkDaySalary;
@@ -8,14 +7,7 @@ import com.marantle.nutcracker.model.WorkShift;
 import com.marantle.nutcracker.repository.NutRepo;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -27,31 +19,25 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
 
-public class DataParserTest {
+public class DataParserTests {
 
     //content of testhours.csv for reference
     private static String data;
 
-    private DataParser dataParser = new DataParser();
+    private static DataParser dataParser = new DataParser();
 
-    private NutRepo repo = NutRepo.getInstance();
+    private static NutRepo repo = NutRepo.getInstance();
 
     @BeforeClass
     public static void loadAndPrintFile() throws URISyntaxException, IOException {
-        URI uri = DataParserTest.class.getClassLoader().getResource("testhours.csv").toURI();
+        URI uri = DataParserTests.class.getClassLoader().getResource("testhours.csv").toURI();
         data = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("UTF-8"));
         System.out.printf("Testing data: %n %s %n", data);
-    }
-
-    @Before
-    public void loadTestDataFromFile() throws IOException, URISyntaxException {
-
+        
         dataParser.parseData("testhours.csv");
         repo.clear();
         repo.setPersons(dataParser.getPersons());
