@@ -1,10 +1,9 @@
 package com.marantle.nutcracker.parser;
 
 
-import com.marantle.nutcracker.bootstrap.DataLoader;
+import com.marantle.nutcracker.model.Salary;
 import com.marantle.nutcracker.model.Person;
 import com.marantle.nutcracker.model.WorkDay;
-import com.marantle.nutcracker.model.WorkDaySalary;
 import com.marantle.nutcracker.model.WorkShift;
 import com.marantle.nutcracker.util.MyUtilities;
 import org.apache.commons.io.IOUtils;
@@ -16,11 +15,11 @@ import org.springframework.core.io.ResourceLoader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -46,7 +45,7 @@ public class DataParser {
     private List<Person> persons = new ArrayList<>();
     private List<WorkShift> shifts = new ArrayList<>();
     private List<WorkDay> workDays = new ArrayList<>();
-    private List<WorkDaySalary> salaries = new ArrayList<>();
+    private List<Salary> salaries = new ArrayList<>();
     @Autowired
     private ResourceLoader resourceLoader;
 
@@ -82,16 +81,16 @@ public class DataParser {
                 WorkShift shift = new WorkShift(personId, date, startDateTime, endDateTime);
                 this.shifts.add(shift);
             } catch (NumberFormatException e) {
-                System.err.printf("Unable to read id from line %s %n", lineInFile);
+                log.error(String.format("Unable to read id from line %s ", lineInFile));
                 erroneusLines.add(lineInFile);
             } catch (DateTimeParseException e) {
-                System.err.printf("Unable to read date or time from line %s %n", lineInFile);
+                log.error(String.format("Unable to read date or time from line %s ", lineInFile));
                 erroneusLines.add(lineInFile);
             }
         });
 
         if (!erroneusLines.isEmpty()) {
-            System.out.printf("%d lines failed to parse, first 5 follow%n", erroneusLines.size());
+            log.error(String.format("%d lines failed to parse, first 5 follow", erroneusLines.size()));
             erroneusLines.stream().limit(5).forEach(System.out::println);
         }
     }
@@ -119,7 +118,7 @@ public class DataParser {
      * @throws URISyntaxException
      */
     private List<String> getFilePath2(String fileName) throws URISyntaxException {
-        Resource resource = resourceLoader.getResource(fileName);
+        Resource resource = resourceLoader.getResource("classpath:"+fileName);
 
         String[] lines = null;
         try (InputStream inputStream = resource.getInputStream()) {
@@ -227,17 +226,17 @@ public class DataParser {
     private void calculateSalaries() {
 
         this.workDays.forEach(personsWorkDay -> {
-            WorkDaySalary salary = calculateSalaryForDay(personsWorkDay);
+            Salary salary = calculateSalaryForDay(personsWorkDay);
             this.salaries.add(salary);
         });
     }
 
     /**
      * @param workDay a workDay to calculate
-     * @return a WorkDaySalary object that has calculated salaries for the given WorkDay and Person
+     * @return a Salary object that has calculated salaries for the given WorkDay and Person
      */
-    private WorkDaySalary calculateSalaryForDay(WorkDay workDay) {
-        WorkDaySalary salary = new WorkDaySalary(workDay);
+    private Salary calculateSalaryForDay(WorkDay workDay) {
+        Salary salary = new Salary(workDay);
 
         LocalTime allHoursT = workDay.getAllHours();
         LocalTime regularHoursT = workDay.getRegularHours();
@@ -276,12 +275,12 @@ public class DataParser {
             overtimeHoursT = overtimeHoursT.minusMinutes(15);
         }
 
-        salary.setTotalUncompensatedSalary(allHours * REGULAR_WAGE);
-        salary.setRegularSalary(regularHours * REGULAR_WAGE);
-        salary.setEveningSalary(eveningHours * (REGULAR_WAGE + EVENING_COMPENSATION));
-        salary.setEveningCompensation(eveningHours * EVENING_COMPENSATION);
-        salary.setOvertimeSalary(overtimeSalary);
-        salary.setOvertimeCompensation(overtimeCompensation);
+        salary.setTotalUncompensatedSalary(new BigDecimal(allHours * REGULAR_WAGE));
+        salary.setRegularSalary(new BigDecimal(regularHours * REGULAR_WAGE));
+        salary.setEveningSalary(new BigDecimal(eveningHours * (REGULAR_WAGE + EVENING_COMPENSATION)));
+        salary.setEveningCompensation(new BigDecimal(eveningHours * EVENING_COMPENSATION));
+        salary.setOvertimeSalary(new BigDecimal(overtimeSalary));
+        salary.setOvertimeCompensation(new BigDecimal(overtimeCompensation));
         return salary;
     }
 
@@ -312,7 +311,7 @@ public class DataParser {
         return this.workDays;
     }
 
-    public List<WorkDaySalary> getSalaries() {
+    public List<Salary> getSalaries() {
         return salaries;
     }
 }

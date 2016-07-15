@@ -20,7 +20,8 @@ public class NutRepo {
     private static NutRepo nutRepo = new NutRepo();
 
 
-    private NutRepo(){}
+    private NutRepo() {
+    }
 
     public Person findPersonById(int id) {
         Optional<Person> result = listPersons().stream().filter(persons -> persons.getPersonId() == id).findFirst();
@@ -43,15 +44,15 @@ public class NutRepo {
         return result.isPresent() ? result.get() : new WorkDay();
     }
 
-    public WorkDaySalary findWorkDaySalary(int id, LocalDate date) {
-        WorkDaySalary rtnDay = null;
+    public Salary findSalary(int id, LocalDate date) {
+        Salary rtnDay = null;
 
-        Optional<WorkDaySalary> result = salaries.stream()
+        Optional<Salary> result = salaries.stream()
                 .filter(day ->
                         day.getPersonId() == id &&
                                 (day.getWorkDate().equals(date) || Objects.isNull(date)))
                 .findFirst();
-        return result.isPresent() ? result.get() : new WorkDaySalary();
+        return result.isPresent() ? result.get() : new Salary();
     }
 
     /**
@@ -79,7 +80,7 @@ public class NutRepo {
                 .collect(Collectors.toList());
     }
 
-    public WorkDaySalary getPersonsSalary(int personId, LocalDate date) {
+    public Salary getPersonsSalary(int personId, LocalDate date) {
         return listSalaries()
                 .stream()
                 .filter(salary ->
@@ -89,7 +90,7 @@ public class NutRepo {
                 .get();
     }
 
-    public List<WorkDaySalary> getPersonsSalaries(int personId) {
+    public List<Salary> getPersonsSalaries(int personId) {
         return listSalaries()
                 .stream()
                 .filter(salary ->
@@ -107,7 +108,7 @@ public class NutRepo {
     public List<WorkShift> getPersonsWorkShifts(int personId, LocalDate date) {
         return listWorkShifts()
                 .stream()
-                .filter(day -> day.getPersonId() == personId&&
+                .filter(day -> day.getPersonId() == personId &&
                         day.getWorkDate().equals(date))
                 .collect(Collectors.toList());
     }
@@ -122,7 +123,7 @@ public class NutRepo {
         DataHolder.workDays.addAll(workDays);
     }
 
-    public void setSalaries(List<WorkDaySalary> salaries) {
+    public void setSalaries(List<Salary> salaries) {
         DataHolder.salaries.clear();
         DataHolder.salaries.addAll(salaries);
     }
@@ -132,7 +133,7 @@ public class NutRepo {
         DataHolder.persons.addAll(persons);
     }
 
-    public static NutRepo getInstance(){
+    public static NutRepo getInstance() {
         return nutRepo;
     }
 
@@ -140,14 +141,43 @@ public class NutRepo {
         return new ArrayList<WorkDay>(workDays);
     }
 
-    public List<WorkDaySalary> listSalaries() {
-        return new ArrayList<WorkDaySalary>(salaries);
+    public List<Salary> listSalaries() {
+        return new ArrayList<Salary>(salaries);
     }
 
     public List<WorkShift> listWorkShifts() {
         ArrayList<WorkShift> list = new ArrayList<WorkShift>(shifts);
         list.sort(MyUtilities.getDataSorter());
         return list;
+    }
+
+    public List<Salary> findMonthlySalaries() {
+        //get distinct months by creating list of dates with same the day and setting them to set which doesnt allow duplicates
+        Set<LocalDate> months = getMonths();
+        months.forEach(System.out::println);
+
+        List<Salary> monthlySalaries = new ArrayList<>();
+        persons.forEach(person -> {
+            months.forEach(month -> {
+                Salary monthlySalary = salaries.stream().filter(slry -> {
+                    boolean check = slry.getWorkDate().getYear() == month.getYear();
+                    check = check && slry.getWorkDate().getMonth() == month.getMonth();
+                    check = check && slry.getPersonId() == person.getPersonId();
+                    return check;
+                }).reduce(new Salary(person.getPersonId(), month), (s1, s2) -> {
+                    s1.setTotalSalary(s1.getTotalSalary().add(s2.getTotalSalary()));
+                    return s1;
+                });
+                monthlySalaries.add(monthlySalary);
+            });
+        });
+        return monthlySalaries;
+    }
+
+    private Set<LocalDate> getMonths() {
+        return salaries.stream()
+                .map(salary -> LocalDate.of(salary.getWorkDate().getYear(), salary.getWorkDate().getMonth(), 1))
+                .collect(Collectors.toSet());
     }
 
     public List<Person> listPersons() {

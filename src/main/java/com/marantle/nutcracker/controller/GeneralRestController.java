@@ -1,8 +1,8 @@
 package com.marantle.nutcracker.controller;
 
+import com.marantle.nutcracker.model.Salary;
 import com.marantle.nutcracker.model.Person;
 import com.marantle.nutcracker.model.WorkDay;
-import com.marantle.nutcracker.model.WorkDaySalary;
 import com.marantle.nutcracker.model.WorkShift;
 import com.marantle.nutcracker.repository.NutRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class GeneralRestController {
     NutRepo repo;
 
     @RequestMapping("/salary/all")
-    public List<WorkDaySalary> salaries() {
+    public List<Salary> salaries() {
         return repo.listSalaries();
     }
 

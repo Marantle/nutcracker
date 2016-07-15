@@ -2,6 +2,7 @@ package com.marantle.nutcracker.util;
 
 import com.marantle.nutcracker.model.GenericData;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
@@ -17,13 +18,13 @@ public class MyUtilities {
     public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#0.00");
     {DECIMAL_FORMAT.setRoundingMode(RoundingMode.HALF_UP);}
 
-    public static String formatAsDollarString(double decimalValue){
+    public static String formatAsDollarString(BigDecimal decimalValue){
         String formattedValue = String.format("$%s", DECIMAL_FORMAT.format(decimalValue));
         return formattedValue;
     }
 
     /**
-     * Comparator to sort data by personid and workdate, applies to WorkDay, WorkDaySalary, WorkShift
+     * Comparator to sort data by personid and workdate, applies to WorkDay, Salary, WorkShift
      * or any other that implements the GenericData interface
      * @return comparator
      */
