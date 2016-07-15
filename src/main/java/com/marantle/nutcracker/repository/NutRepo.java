@@ -172,6 +172,9 @@ public class NutRepo {
                     s1.setEveningSalary(s1.getEveningSalary().add(s2.getEveningSalary()));
                     s1.setOvertimeSalary(s1.getOvertimeSalary().add(s2.getOvertimeSalary()));
                     s1.setRegularSalary(s1.getRegularSalary().add(s2.getRegularSalary()));
+                    s1.setTotalUncompensatedSalary(s1.getTotalUncompensatedSalary().add(s2.getTotalUncompensatedSalary()));
+                    s1.setEveningCompensation(s1.getEveningCompensation().add(s2.getEveningCompensation()));
+                    s1.setOvertimeCompensation(s1.getOvertimeCompensation().add(s2.getOvertimeCompensation()));
                     return s1;
                 });
                 monthlySalaries.add(monthlySalary);
