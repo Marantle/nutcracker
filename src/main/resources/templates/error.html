@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <title>My sweet title</title>
+    <!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
+</head>
+<body>
+<div class="container">
+    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+</div>
+<div class="container">
+    <h1 th:text="${errorCode}">500</h1>
+    <p th:text="${errorMessage}">java.lang.NullPointerException</p>
+</div>
+</body>
+</html>
