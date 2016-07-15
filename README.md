@@ -6,6 +6,22 @@ The data is read from \src\main\resources\HourList201403.csv and test data is re
 Implemented using Spring Boot Web framework and Thymeleaf as the templating engine for frontend.
 The front end is a simple website composed mostly of simple tables that expose the data, using Bootstrap.
 
+As this handles currencies, I've used BigDecimal's to keep the currencies as accurate as possible, could also propabbly have used integer/long to represent cents.
+
+###Currency calculations
+Logic is that overtime compensation increases every 2 hours, tho this can be changed.
+Overtime goes through 1.25, 1.5, 2 multipliers to regular salary..
+Evening compensation is $1.15.
+Regular salary is $3.75.
+
+The following variables are stored in MyUtilities.java all tho they could be externalized to a settings file.
+You can modify any of these to affect the application logic.
+```
+public static final double REGULAR_WAGE = 3.75;
+public static final double EVENING_COMPENSATION = 1.15;
+public static final  int OVERTIME_INCREMENT = 2;
+public static final  double[] OVERTIME_COMPENSATIONS = {1.25, 1.5, 2};
+```
 ###Additional libraries used
 - jackson-datatype-jsr310
     Datatype module to make Jackson (http://jackson.codehaus.org) recognize Java 8 Date & Time API data types (JSR-310).
