@@ -48,7 +48,7 @@ public class SalaryController {
         headers.put("personId", "Person Id");
         headers.put("personName", "Person name");
         headers.put("monthOfYear", "Month");
-        headers.put("totalSalaryFormatted", "Days salary");
+        headers.put("totalSalaryFormatted", "Months salary");
         headers.put("regularSalaryFormatted", "Base salary");
         headers.put("eveningSalaryFormatted", "Evening salary");
         headers.put("overtimeSalaryFormatted", "Overtime salary");
