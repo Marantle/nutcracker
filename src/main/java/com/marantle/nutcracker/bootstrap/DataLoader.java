@@ -29,7 +29,7 @@ public class DataLoader implements ApplicationListener<ContextRefreshedEvent> {
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
         try {
-            dataParser.parseData("HourList201403.csv");
+            dataParser.parseData("hourlist.csv");
         } catch (IOException | URISyntaxException e) {
             log.fatal("Could not initialize data.", e);
             System.exit(0);

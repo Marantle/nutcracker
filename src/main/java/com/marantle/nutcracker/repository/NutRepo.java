@@ -28,7 +28,6 @@ public class NutRepo {
         return result.isPresent() ? result.get() : new Person(0, "");
     }
 
-
     /**
      * find the WorkDay for a given personid and date
      *
@@ -155,9 +154,13 @@ public class NutRepo {
         return list;
     }
 
+    /**
+     * reduce daily salaries into sum of monthly salaries per user
+     * @return list of monthly salaries
+     */
     public List<Salary> listMonthlySalaries() {
         //get distinct months by creating list of dates with same the day and setting them to set which doesnt allow duplicates
-        Set<LocalDate> months = getMonths();
+        Set<LocalDate> months = getDistinctMonths();
         List<Salary> monthlySalaries = new ArrayList<>();
         //loop each persons each months each salary and reduce them
         persons.forEach(person -> {
@@ -190,7 +193,8 @@ public class NutRepo {
         return monthlySalaries;
     }
 
-    private Set<LocalDate> getMonths() {
+
+    private Set<LocalDate> getDistinctMonths() {
         return salaries.stream()
                 .map(salary -> LocalDate.of(salary.getWorkDate().getYear(), salary.getWorkDate().getMonth(), 1))
                 .collect(Collectors.toSet());

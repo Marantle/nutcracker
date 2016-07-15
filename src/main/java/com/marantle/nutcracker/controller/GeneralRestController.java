@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * For testing output before using it
+ * For testing and viewing raw json data
  */
 @RestController
 public class GeneralRestController {
