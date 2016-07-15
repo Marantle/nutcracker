@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * Created by mlpp on 13.7.2016.
+ * holds a single persons details
  */
 public class Person {
 

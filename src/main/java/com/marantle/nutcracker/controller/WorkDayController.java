@@ -7,9 +7,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-/**
- * Created by Marko on 14.7.2016.
- */
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+
 @Controller
 public class WorkDayController {
     @Autowired
@@ -17,18 +18,18 @@ public class WorkDayController {
 
     @RequestMapping(value = "/workdays", method = RequestMethod.GET)
     public String list(Model model){
-        String[] headerFields ={
-            "personId",      "workDate",      "allHours",
-            "regularHours",  "eveningHours",  "overtimeHours"
-        };
-        String[] headerTexts ={
-            "Person Id",     "Work date",     "Total hours",
-            "Regular hours", "Evening hours", "Overtime hours"
-        };
+        //for convenience, use an ordered map to list field and headers for the table
+        Map<String, String> headers = new LinkedHashMap<String, String>();
+        headers.put("personId", "Person Id");
+        headers.put("workDate", "Work date");
+        headers.put("allHours", "Total hours");
+        headers.put("regularHours", "Regular hours");
+        headers.put("eveningHours", "Evening hours");
+        headers.put("overtimeHours", "Overtime hours");
 
         model.addAttribute("pageHeader", "All workdays");
-        model.addAttribute("headerFields", headerFields);
-        model.addAttribute("headerTexts", headerTexts);
+        model.addAttribute("headerFields", headers.keySet());
+        model.addAttribute("headerTexts", headers.values());
         model.addAttribute("dataList", repo.listWorkDays());
 
         return "generictable";

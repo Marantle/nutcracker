@@ -1,161 +1,193 @@
 package com.marantle.nutcracker.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.marantle.nutcracker.util.MyUtilities;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
+
 /**
- * Created by mlpp on 13.7.2016.
+ * holds a salary breakdown for a given date
  */
 public class Salary implements GenericData {
 
-	private int personId;
-	private LocalDate workDate;
-	private BigDecimal regularSalary;
-	private BigDecimal eveningSalary = new BigDecimal(0);
-	private BigDecimal eveningCompensation = new BigDecimal(0);
-	private BigDecimal overtimeSalary = new BigDecimal(0);
-	private BigDecimal overtimeCompensation = new BigDecimal(0);
-	private BigDecimal totalUncompensatedSalary = new BigDecimal(0);
-	private BigDecimal totalSalary = new BigDecimal(0);
+    private int personId;
+    @JsonIgnore
+    private String personName;
+    private LocalDate workDate;
+    private BigDecimal regularSalary = new BigDecimal(0);
+    private BigDecimal eveningSalary = new BigDecimal(0);
+    private BigDecimal eveningCompensation = new BigDecimal(0);
+    private BigDecimal overtimeSalary = new BigDecimal(0);
+    private BigDecimal overtimeCompensation = new BigDecimal(0);
+    private BigDecimal totalUncompensatedSalary = new BigDecimal(0);
+    private BigDecimal totalSalary = new BigDecimal(0);
 
-	public Salary() {}
+    public Salary() {
+    }
+
+    public Salary(Person person, LocalDate date) {
+        this.personId = person.getPersonId();
+        this.personName = person.getPersonName();
+        this.workDate = date;
+    }
+
+    public Salary(int personId, LocalDate date) {
+        this.personId = personId;
+        this.workDate = date;
+    }
+
+    public Salary(WorkDay personsDay) {
+        this.personId = personsDay.getPersonId();
+        this.workDate = personsDay.getWorkDate();
+    }
 
 
-	public Salary(int personId, LocalDate date) {
-		this.personId = personId;
-		this.workDate = date;
-	}
+    public void setOvertimeSalary(BigDecimal overtimeSalary) {
+        this.overtimeSalary = overtimeSalary;
+        updateTotalSalary();
+    }
 
-	public Salary(WorkDay personsDay) {
-		this.personId = personsDay.getPersonId();
-		this.workDate = personsDay.getWorkDate();
-	}
 
-	public BigDecimal getOvertimeSalary() {
-		return overtimeSalary;
-	}
+    public void setEveningSalary(BigDecimal eveningSalary) {
+        this.eveningSalary = eveningSalary;
+        updateTotalSalary();
+    }
 
-	public void setOvertimeSalary(BigDecimal overtimeSalary) {
-		this.overtimeSalary = overtimeSalary;
-		updateTotalSalary();
-	}
+    public int getPersonId() {
+        return personId;
+    }
 
-	public String getOvertimeSalaryFormatted() {
-		return MyUtilities.formatAsDollarString(overtimeSalary);
-	}
+    public LocalDate getWorkDate() {
+        return workDate;
+    }
 
-	public BigDecimal getEveningSalary() {
-		return eveningSalary;
-	}
+    public String getMonthOfYear() {
+        return workDate.format(MyUtilities.MONTH_FORMAT);
+    }
 
-	public void setEveningSalary(BigDecimal eveningSalary) {
-		this.eveningSalary = eveningSalary;
-		updateTotalSalary();
-	}
+    public BigDecimal getTotalSalary() {
+        return totalSalary;
+    }
 
-	public String getEveningSalaryFormatted() {
-		return MyUtilities.formatAsDollarString(eveningSalary);
-	}
+    public String getTotalSalaryFormatted() {
+        return MyUtilities.formatAsDollarString(totalSalary);
+    }
 
-	public BigDecimal getTotalSalary() {
-		return totalSalary;
-	}
+    public BigDecimal getTotalUncompensatedSalary() {
+        return totalUncompensatedSalary;
+    }
 
-	public void setTotalSalary(BigDecimal totalSalary) {
-		this.totalSalary = totalSalary;
-	}
+    public String getTotalUncompensatedSalaryFormatted() {
+        return MyUtilities.formatAsDollarString(totalUncompensatedSalary);
+    }
 
-	public String getTotalSalaryFormatted() {
-		return MyUtilities.formatAsDollarString(totalSalary);
-	}
 
-	public LocalDate getWorkDate() {
-		return workDate;
-	}
+    public BigDecimal getRegularSalary() {
+        return regularSalary;
+    }
 
-	public BigDecimal getRegularSalary() {
-		return regularSalary;
-	}
+    public String getRegularSalaryFormatted() {
+        return MyUtilities.formatAsDollarString(regularSalary);
+    }
 
-	public void setRegularSalary(BigDecimal regularSalary) {
-		this.regularSalary = regularSalary;
-		updateTotalSalary();
-	}
+    public BigDecimal getEveningSalary() {
+        return eveningSalary;
+    }
 
-	public String getRegularSalaryFormatted() {
-		return MyUtilities.formatAsDollarString(regularSalary);
-	}
-	private void updateTotalSalary() {
-		totalSalary = regularSalary.add(eveningSalary).add(overtimeSalary);
-	}
-	public int getPersonId() {
-		return personId;
-	}
-	public BigDecimal getEveningCompensation() {
-		return eveningCompensation;
-	}
+    public String getEveningSalaryFormatted() {
+        return MyUtilities.formatAsDollarString(eveningSalary);
+    }
 
-	public void setEveningCompensation(BigDecimal eveningCompensation) {
-		this.eveningCompensation = eveningCompensation;
-	}
 
-	public String getEveningCompensationFormatted() {
-		return MyUtilities.formatAsDollarString(eveningCompensation);
-	}
+    public BigDecimal getEveningCompensation() {
+        return eveningCompensation;
+    }
 
-	public BigDecimal getOvertimeCompensation() {
-		return overtimeCompensation;
-	}
+    public String getEveningCompensationFormatted() {
+        return MyUtilities.formatAsDollarString(eveningCompensation);
+    }
 
-	public void setOvertimeCompensation(BigDecimal overtimeCompensation) {
-		this.overtimeCompensation = overtimeCompensation;
-	}
+    public BigDecimal getOvertimeSalary() {
+        return overtimeSalary;
+    }
 
-	public String getOvertimeCompensationFormatted() {
-		return MyUtilities.formatAsDollarString(overtimeCompensation);
-	}
+    public String getOvertimeSalaryFormatted() {
+        return MyUtilities.formatAsDollarString(overtimeSalary);
+    }
 
-	public BigDecimal getTotalUncompensatedSalary() {
-		return totalUncompensatedSalary;
-	}
+    public BigDecimal getOvertimeCompensation() {
+        return overtimeCompensation;
+    }
 
-	public void setTotalUncompensatedSalary(BigDecimal totalUncompensatedSalary) {
-		this.totalUncompensatedSalary = totalUncompensatedSalary;
-	}
+    public String getOvertimeCompensationFormatted() {
+        return MyUtilities.formatAsDollarString(overtimeCompensation);
+    }
 
-	public String getTotalUncompensatedSalaryFormatted() {
-		return MyUtilities.formatAsDollarString(overtimeCompensation);
-	}
+    public void setTotalUncompensatedSalary(BigDecimal totalUncompensatedSalary) {
+        this.totalUncompensatedSalary = totalUncompensatedSalary;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-		Salary that = (Salary) o;
-		return personId == that.personId && Objects.equals(workDate, that.workDate);
-	}
+    public void setTotalSalary(BigDecimal totalSalary) {
+        this.totalSalary = totalSalary;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(personId, workDate);
-	}
+    public void setRegularSalary(BigDecimal regularSalary) {
+        this.regularSalary = regularSalary;
+        updateTotalSalary();
+    }
 
-	@Override
-	public String toString() {
-		return "Salary{" +
-				"personId=" + personId +
-				", workDate=" + workDate +
-				", totalSalary=" + totalSalary +
-				", regularSalary=" + regularSalary +
-				", eveningSalary=" + eveningSalary +
-				", eveningCompensation=" + eveningCompensation +
-				", overtimeSalary=" + overtimeSalary +
-				", overtimeCompensation=" + overtimeCompensation +
-				'}';
-	}
+
+    private void updateTotalSalary() {
+        totalSalary = regularSalary.add(eveningSalary).add(overtimeSalary);
+    }
+
+
+    public void setEveningCompensation(BigDecimal eveningCompensation) {
+        this.eveningCompensation = eveningCompensation;
+    }
+
+    public void setOvertimeCompensation(BigDecimal overtimeCompensation) {
+        this.overtimeCompensation = overtimeCompensation;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Salary that = (Salary) o;
+        return personId == that.personId && Objects.equals(workDate, that.workDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(personId, workDate);
+    }
+
+    @Override
+    public String toString() {
+        return "Salary{" +
+                "personId=" + personId +
+                ", workDate=" + workDate +
+                ", totalSalary=" + totalSalary +
+                ", regularSalary=" + regularSalary +
+                ", eveningSalary=" + eveningSalary +
+                ", eveningCompensation=" + eveningCompensation +
+                ", overtimeSalary=" + overtimeSalary +
+                ", overtimeCompensation=" + overtimeCompensation +
+                '}';
+    }
+
+    public String getPersonName() {
+        return personName;
+    }
+
+    public void setPersonName(String personName) {
+        this.personName = personName;
+    }
 }

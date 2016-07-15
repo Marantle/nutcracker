@@ -7,7 +7,7 @@ import java.time.LocalTime;
 import java.util.Objects;
 
 /**
- * Created by Marko on 11.7.2016.
+ * holds a warkday hour breakdown for a given date
  */
 public class WorkDay implements GenericData {
 
@@ -18,6 +18,10 @@ public class WorkDay implements GenericData {
     private LocalTime eveningHours;
     private LocalTime overtimeHours;
 
+    public WorkDay(int personId, LocalDate workDate) {
+        this.personId = personId;
+        this.workDate = workDate;
+    }
     public WorkDay() {
         allHours = LocalTime.of(0,0);
         regularHours = LocalTime.of(0,0);

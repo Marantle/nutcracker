@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * Created by Marko on 13.7.2016.
+ * For testing output before using it
  */
 @RestController
 public class GeneralRestController {
@@ -20,22 +20,27 @@ public class GeneralRestController {
     @Autowired
     NutRepo repo;
 
-    @RequestMapping("/salary/all")
+    @RequestMapping("/salaries/raw")
     public List<Salary> salaries() {
         return repo.listSalaries();
     }
 
-    @RequestMapping("/workshift/all")
+    @RequestMapping("/salaries/monthly/raw")
+    public List<Salary> monthlySalaries() {
+        return repo.listMonthlySalaries();
+    }
+
+    @RequestMapping("/workshifts/raw")
     public List<WorkShift> shifts() {
         return repo.listWorkShifts();
     }
 
-    @RequestMapping("/workday/all")
+    @RequestMapping("/workdays/raw")
     public List<WorkDay> workdays() {
         return repo.listWorkDays();
     }
 
-    @RequestMapping("/person/all")
+    @RequestMapping("/persons/raw")
     public List<Person> persons() {
         return repo.listPersons();
     }

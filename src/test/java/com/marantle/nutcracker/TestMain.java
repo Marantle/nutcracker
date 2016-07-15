@@ -27,23 +27,8 @@ public class TestMain {
         repo.setWorkDays(dataParser.getWorkdays());
         repo.setSalaries(dataParser.getSalaries());
 
-        repo.listPersons().forEach(person -> {
-            System.out.printf("%s has %d salary days, as follows: %n", person.getPersonName(), repo.getPersonsSalaries(person.getPersonId()).size());
-            Stream<Salary> sortedStream = repo.getPersonsSalaries(person.getPersonId())
-                    .stream().sorted(MyUtilities.getDataSorter());
-            sortedStream.forEach(salary -> {
-//                System.out.println(repo.findWorkDay(salary.getPersonId(), salary.getWorkDate()));
-                System.out.printf("%f %n", salary.getTotalSalary());
-            });
-        });
-
-        repo.findMonthlySalaries().forEach(System.err::println);
-        //print total salaries
-        repo.listPersons().forEach(person -> {
-            List<Salary> salaries = repo.getPersonsSalaries(person.getPersonId());
-            double sum = salaries.stream().mapToDouble(p -> p.getTotalSalary().doubleValue()).sum();
-            System.out.println(person);
-            System.out.println(MyUtilities.formatAsDollarString(new BigDecimal(sum)));
+        repo.listMonthlySalaries().forEach(s -> {
+            System.out.printf("%d %s %s %s %n", s.getPersonId(), s.getPersonName(), s.getMonthOfYear(), s.getTotalSalaryFormatted());
         });
     }
 

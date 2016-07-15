@@ -11,9 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Created by Marko on 14.7.2016.
- */
+
 @Controller
 public class SalaryController {
 
@@ -21,23 +19,48 @@ public class SalaryController {
     NutRepo repo;
 
     @RequestMapping(value = "/salaries", method = RequestMethod.GET)
-    public String list(Model model) {
-        Map<String, String> map = new LinkedHashMap<String, String>();
-        map.put("personId", "Person Id");
-        map.put("workDate", "Work Date");
-        map.put("totalSalaryFormatted", "Days salary");
-        map.put("regularSalaryFormatted", "Base salary");
-        map.put("eveningSalaryFormatted", "Evening salary");
-        map.put("eveningCompensationFormatted", "Evening compensation");
-        map.put("overtimeSalaryFormatted", "Overtime salary");
-        map.put("overtimeCompensationFormatted", "Overtime compensation");
-        map.put("totalUncompensatedSalaryFormatted", "Salary w/o compensation");
+    public String salaries(Model model) {
+        //for convenience, use an ordered map to list field and headers for the table
+        Map<String, String> headers = new LinkedHashMap<String, String>();
+        headers.put("personId", "Person Id");
+        headers.put("workDate", "Work Date");
+        headers.put("totalSalaryFormatted", "Days salary");
+        headers.put("regularSalaryFormatted", "Base salary");
+        headers.put("eveningSalaryFormatted", "Evening salary");
+        headers.put("overtimeSalaryFormatted", "Overtime salary");
+        headers.put("totalUncompensatedSalaryFormatted", "Salary w/o compensation");
+        headers.put("eveningCompensationFormatted", "Evening compensation");
+        headers.put("overtimeCompensationFormatted", "Overtime compensation");
 
-        model.addAttribute("headers", map);
+        model.addAttribute("headers", headers);
         model.addAttribute("pageHeader", "All daily salaries");
-        model.addAttribute("headerFields", map.keySet());
-        model.addAttribute("headerTexts", map.values());
+        model.addAttribute("headerFields", headers.keySet());
+        model.addAttribute("headerTexts", headers.values());
         model.addAttribute("dataList", repo.listSalaries());
+
+        return "generictable";
+    }
+
+    @RequestMapping(value = "/salaries/monthly", method = RequestMethod.GET)
+    public String monthlySalaries(Model model) {
+        //for convenience, use an ordered map to list field and headers for the table
+        Map<String, String> headers = new LinkedHashMap<String, String>();
+        headers.put("personId", "Person Id");
+        headers.put("personName", "Person name");
+        headers.put("monthOfYear", "Month");
+        headers.put("totalSalaryFormatted", "Days salary");
+        headers.put("regularSalaryFormatted", "Base salary");
+        headers.put("eveningSalaryFormatted", "Evening salary");
+        headers.put("overtimeSalaryFormatted", "Overtime salary");
+        headers.put("totalUncompensatedSalaryFormatted", "Salary w/o compensation");
+        headers.put("eveningCompensationFormatted", "Evening compensation");
+        headers.put("overtimeCompensationFormatted", "Overtime compensation");
+
+        model.addAttribute("headers", headers);
+        model.addAttribute("pageHeader", "Monthly salaries");
+        model.addAttribute("headerFields", headers.keySet());
+        model.addAttribute("headerTexts", headers.values());
+        model.addAttribute("dataList", repo.listMonthlySalaries());
 
         return "generictable";
     }

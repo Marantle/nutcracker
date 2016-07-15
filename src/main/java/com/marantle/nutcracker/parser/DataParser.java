@@ -5,7 +5,7 @@ import com.marantle.nutcracker.model.Salary;
 import com.marantle.nutcracker.model.Person;
 import com.marantle.nutcracker.model.WorkDay;
 import com.marantle.nutcracker.model.WorkShift;
-import com.marantle.nutcracker.util.MyUtilities;
+import static com.marantle.nutcracker.util.MyUtilities.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,31 +28,32 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 
 /**
- * class for generating list of workshifts from a csv file
+ * parses data for the given file into persons, salaries, workdays and workshifts
  */
 public class DataParser {
 
     private Logger log = Logger.getLogger(DataParser.class);
-    private static final double REGULAR_WAGE = 3.75;
-    private static final double EVENING_COMPENSATION = 1.15;
-    //Increment after which the compensation is increased
-    private static final int OVERTIME_INCREMENT = 2;
-    private static final double[] OVERTIME_COMPENSATIONS = {1.25, 1.5, 2};
-    private LocalTime eveningStartTime = LocalTime.parse("18:01", MyUtilities.TIME);
-    private LocalTime eveningEndTime = LocalTime.parse("06:01", MyUtilities.TIME);
     private Charset charset = Charset.forName("UTF-8");
     private String fileName;
-    private List<Person> persons = new ArrayList<>();
-    private List<WorkShift> shifts = new ArrayList<>();
-    private List<WorkDay> workDays = new ArrayList<>();
-    private List<Salary> salaries = new ArrayList<>();
+    private List<Person> persons;
+    private List<WorkShift> shifts;
+    private List<WorkDay> workDays;
+    private List<Salary> salaries;
+
     @Autowired
     private ResourceLoader resourceLoader;
 
 
+    /**
+     * populates the shifts and persons lists from the csv file
+     * @throws IOException
+     * @throws URISyntaxException
+     */
     private void parseShiftsAndPersons()
             throws IOException, URISyntaxException {
 
+        this.persons = new ArrayList<>();
+        this.shifts = new ArrayList<>();
         List<String> erroneusLines = new ArrayList<>();
         List<String> fileLines;
         fileLines = getFileLines(fileName);
@@ -65,10 +66,10 @@ public class DataParser {
             String personName = splitLine[0];
             try {
                 int personId = Integer.parseInt(splitLine[1]);
-                LocalDate date = LocalDate.parse(splitLine[2], MyUtilities.DATE);
-                LocalTime startTime = LocalTime.parse(splitLine[3], MyUtilities.TIME);
+                LocalDate date = LocalDate.parse(splitLine[2], CSV_DATE_FORMAT);
+                LocalTime startTime = LocalTime.parse(splitLine[3], CSV_TIME_FORMAT);
                 LocalDateTime startDateTime = LocalDateTime.of(date, startTime);
-                LocalTime endTime = LocalTime.parse(splitLine[4], MyUtilities.TIME);
+                LocalTime endTime = LocalTime.parse(splitLine[4], CSV_TIME_FORMAT);
                 LocalDateTime endDateTime = LocalDateTime.of(date, endTime);
                 if (endTime.isBefore(startTime)) {
                     // shift must end on the next day, adjust
@@ -81,17 +82,19 @@ public class DataParser {
                 WorkShift shift = new WorkShift(personId, date, startDateTime, endDateTime);
                 this.shifts.add(shift);
             } catch (NumberFormatException e) {
-                log.error(String.format("Unable to read id from line %s ", lineInFile));
+                log.warn(String.format("Unable to read integer id from line [%s] ", lineInFile));
                 erroneusLines.add(lineInFile);
             } catch (DateTimeParseException e) {
-                log.error(String.format("Unable to read date or time from line %s ", lineInFile));
+                log.warn(String.format("Unable to read date or time from line [%s], must match %s or %s ", lineInFile, "d.M.yyyy", "H:m"));
+                erroneusLines.add(lineInFile);
+            } catch (IndexOutOfBoundsException e) {
+                log.warn(String.format("Index out of bounds when reading line, must have 5 elements [%s] ", lineInFile));
                 erroneusLines.add(lineInFile);
             }
         });
 
         if (!erroneusLines.isEmpty()) {
-            log.error(String.format("%d lines failed to parse, first 5 follow", erroneusLines.size()));
-            erroneusLines.stream().limit(5).forEach(System.out::println);
+            log.warn(String.format("%d lines failed to parse.", erroneusLines.size()));
         }
     }
 
@@ -133,6 +136,13 @@ public class DataParser {
         return Arrays.asList(lines);
     }
 
+    /**
+     * get a list if lines read from the given filename
+     * @param fileName
+     * @return
+     * @throws URISyntaxException
+     * @throws IOException
+     */
     private List<String> getFileLines(String fileName) throws URISyntaxException, IOException {
         List<String> list = null;
         if (Objects.isNull(resourceLoader)) {
@@ -144,8 +154,11 @@ public class DataParser {
         return list;
     }
 
+    /**
+     * populates the workDays list with WorkDay object which contain hourly breakdown for a day
+     */
     private void generateWorkDayData() {
-
+        this.workDays = new ArrayList<>();
         Comparator<WorkShift> byByStartTime = (e1, e2) -> e1.getStart().compareTo(e2.getStart());
         this.shifts.stream().sorted(byByStartTime).forEach(shift -> {
             WorkDay workDay = null;
@@ -205,9 +218,9 @@ public class DataParser {
      * @return
      */
     private boolean isEvening(LocalDate workDate, LocalDateTime dateTime) {
-        LocalDateTime eveningStartDateTime = LocalDateTime.of(workDate, eveningStartTime);
-        LocalDateTime eveningEndDateTime = LocalDateTime.of(workDate, eveningEndTime).plusDays(1);
-        LocalDateTime earlyEveningEndDateTime = LocalDateTime.of(workDate, eveningEndTime);
+        LocalDateTime eveningStartDateTime = LocalDateTime.of(workDate, EVENING_START);
+        LocalDateTime eveningEndDateTime = LocalDateTime.of(workDate, EVENING_END).plusDays(1);
+        LocalDateTime earlyEveningEndDateTime = LocalDateTime.of(workDate, EVENING_END);
 
         //if between 18:00 and 6:00 or before 6:00 in the morning
 
@@ -224,7 +237,7 @@ public class DataParser {
     }
 
     private void calculateSalaries() {
-
+        this.salaries = new ArrayList<>();
         this.workDays.forEach(personsWorkDay -> {
             Salary salary = calculateSalaryForDay(personsWorkDay);
             this.salaries.add(salary);

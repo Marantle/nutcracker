@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+/**
+ * Ran at start to parse and save the data to DataHolder.java
+ */
 @Component
 public class DataLoader implements ApplicationListener<ContextRefreshedEvent> {
 

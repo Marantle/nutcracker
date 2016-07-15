@@ -138,11 +138,15 @@ public class NutRepo {
     }
 
     public List<WorkDay> listWorkDays() {
-        return new ArrayList<WorkDay>(workDays);
+        ArrayList<WorkDay> list = new ArrayList<WorkDay>(workDays);
+        list.sort(MyUtilities.getDataSorter());
+        return list;
     }
 
     public List<Salary> listSalaries() {
-        return new ArrayList<Salary>(salaries);
+        ArrayList<Salary> list = new ArrayList<Salary>(salaries);
+        list.sort(MyUtilities.getDataSorter());
+        return list;
     }
 
     public List<WorkShift> listWorkShifts() {
@@ -151,12 +155,11 @@ public class NutRepo {
         return list;
     }
 
-    public List<Salary> findMonthlySalaries() {
+    public List<Salary> listMonthlySalaries() {
         //get distinct months by creating list of dates with same the day and setting them to set which doesnt allow duplicates
         Set<LocalDate> months = getMonths();
-        months.forEach(System.out::println);
-
         List<Salary> monthlySalaries = new ArrayList<>();
+        //loop each persons each months each salary and reduce them
         persons.forEach(person -> {
             months.forEach(month -> {
                 Salary monthlySalary = salaries.stream().filter(slry -> {
@@ -164,12 +167,22 @@ public class NutRepo {
                     check = check && slry.getWorkDate().getMonth() == month.getMonth();
                     check = check && slry.getPersonId() == person.getPersonId();
                     return check;
-                }).reduce(new Salary(person.getPersonId(), month), (s1, s2) -> {
-                    s1.setTotalSalary(s1.getTotalSalary().add(s2.getTotalSalary()));
+                }).reduce(new Salary(person, month), (s1, s2) -> {
+                    //reduce all salaries in this stream into a single salary by summing them
+                    s1.setEveningSalary(s1.getEveningSalary().add(s2.getEveningSalary()));
+                    s1.setOvertimeSalary(s1.getOvertimeSalary().add(s2.getOvertimeSalary()));
+                    s1.setRegularSalary(s1.getRegularSalary().add(s2.getRegularSalary()));
                     return s1;
                 });
                 monthlySalaries.add(monthlySalary);
             });
+        });
+        //sort the data by month and then user
+        monthlySalaries.sort((s1, s2) -> {
+            if (s1.getMonthOfYear().equals(s2.getMonthOfYear()))
+                return Integer.compare(s1.getPersonId(), s2.getPersonId());
+            else
+                return s1.getMonthOfYear().compareTo(s2.getMonthOfYear());
         });
         return monthlySalaries;
     }

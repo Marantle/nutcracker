@@ -6,8 +6,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+
 /**
- * Created by Marko on 11.7.2016.
+ * Holds the parsed information as is from the provided csv file
  */
 public class WorkShift  implements GenericData {
     private int personId;
