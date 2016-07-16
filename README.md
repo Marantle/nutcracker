@@ -10,23 +10,23 @@ As this handles currencies, I've used BigDecimal's to keep the currencies as acc
 
 
 ###Currency calculations
-Logic is that overtime compensation increases every 2 hours, tho this can be changed.
+Logic is that overtime compensation increases every 2 hours, all though this can be changed.
 Overtime goes through 1.25, 1.5, 2 multipliers to regular salary..
 Evening compensation is $1.15.
 Regular salary is $3.75.
 
-The following variables are stored in MyUtilities.java all tho they could be externalized to a settings file.
+The following variables are stored in MyUtilities.java all though they could easily be externalized to a settings file.
 You can modify any of these to affect the application logic.
 ```
 public static final double REGULAR_WAGE = 3.75;
 public static final double EVENING_COMPENSATION = 1.15;
-public static final  int OVERTIME_INCREMENT = 2;
-public static final  double[] OVERTIME_COMPENSATIONS = {1.25, 1.5, 2};
+public static final int OVERTIME_INCREMENT = 2;
+public static final double[] OVERTIME_COMPENSATIONS = {1.25, 1.5, 2};
 ```
 
 ###Rounding values
 
-As for rounding the results, up until the values are requested to be displayed any point, no rounding takes place.
+As for rounding the results, up until the values are requested to be displayed at any point, no rounding takes place.
 This is different from when if the rounding took place whenever any value was updated, it would most likely cause only a few cents difference, as these test results demonstrate.
 
 ```
@@ -58,6 +58,8 @@ Rounding to half even, aka banker's rounding, any time these values were added t
 ```
 
 ###Additional libraries used
+Dependencies are handled by gradle.
+
 - jackson-datatype-jsr310
     Datatype module to make Jackson (http://jackson.codehaus.org) recognize Java 8 Date & Time API data types (JSR-310).
     Enabled jackson to convert Java 8 Date & Time to json
@@ -87,7 +89,7 @@ after which you can find the application running at http://localhost:8080/
 - /salaries
     Displays daily salaries for each person
 - /salaries/monthly
-    Displays daily salaries for each person
+    Displays monthly salaries for each person
     
 Each path also has sub path of /raw that just dumps the json data to your browser.
 
@@ -121,5 +123,5 @@ Also included is a data comparisons.xlsx for checking the data with manual calcu
     The DataHolder that has as static sets, list of all the parsed data
     and NutRepo that is used to access this data from elsewhere in the app
 - /util
-    Contaigns time formats, value converts and other utilitary methods and fields used in multiple places
+    Contains time formats, value converts and other utilitary methods and fields used in multiple places
     
