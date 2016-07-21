@@ -1,9 +1,9 @@
 ###Nutcracker
-A little personal project for parsing monthly salaries from a csv file and exposes them on a simple website.
+A little personal project for parsing monthly salaries from a csv file and exposing them on a simple website.
 
-The data is read from \src\main\resources\HourList201403.csv and test data is read from \src\test\resources\testhours.csv
+The data is read from \src\main\resources\hourlist.csv and the test data is read from \src\test\resources\testhours.csv.
 
-Implemented using Spring Boot Web framework and Thymeleaf as the templating engine for frontend.
+Implemented using Spring Boot Web framework for backend and Thymeleaf as the templating engine for frontend.
 The front end is a simple website composed mostly of simple tables that expose the data, using Bootstrap.
 
 As this handles currencies, I've used BigDecimal's to keep the currencies as accurate as possible, could also propabbly have used integer/long to represent cents.
@@ -11,9 +11,11 @@ As this handles currencies, I've used BigDecimal's to keep the currencies as acc
 
 ###Currency calculations
 Logic is that overtime compensation increases every 2 hours, all though this can be changed.
-Overtime goes through 1.25, 1.5, 2 multipliers to regular salary..
+A work day is 8 hours long and after that overtime kicks in, irregardless if the 8 hours contains evening hours.
+Overtime goes through 1.25, 1.5, 2 multipliers to regular salary.
 Evening compensation is $1.15.
 Regular salary is $3.75.
+Overtime and evening compensations do not stack.
 
 The following variables are stored in MyUtilities.java all though they could easily be externalized to a settings file.
 You can modify any of these to affect the application logic.
