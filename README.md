@@ -1,4 +1,4 @@
-###Nutcracker
+### Nutcracker
 A little personal project for parsing monthly salaries from a csv file and exposing them on a simple website.
 
 The data is read from \src\main\resources\hourlist.csv and the test data is read from \src\test\resources\testhours.csv.
@@ -9,7 +9,7 @@ The front end is a simple website composed mostly of simple tables that expose t
 As this handles currencies, I've used BigDecimal's to keep the currencies as accurate as possible, could also propabbly have used integer/long to represent cents.
 
 
-###Currency calculations
+### Currency calculations
 Logic is that overtime compensation increases every 2 hours, all though this can be changed.
 A work day is 8 hours long and after that overtime kicks in, irregardless if the 8 hours contains evening hours.
 Overtime goes through 1.25, 1.5, 2 multipliers to regular salary.
@@ -26,7 +26,7 @@ public static final int OVERTIME_INCREMENT = 2;
 public static final double[] OVERTIME_COMPENSATIONS = {1.25, 1.5, 2};
 ```
 
-###Rounding values
+### Rounding values
 
 As for rounding the results, up until the values are requested to be displayed at any point, no rounding takes place.
 This is different from when if the rounding took place whenever any value was updated, it would most likely cause only a few cents difference, as these test results demonstrate.
@@ -59,7 +59,7 @@ Rounding to half even, aka banker's rounding, any time these values were added t
 3 Larry Lolcode 2014/03 $377,00 
 ```
 
-###Additional libraries used
+### Additional libraries used
 Dependencies are handled by gradle.
 
 - jackson-datatype-jsr310
@@ -69,7 +69,7 @@ Dependencies are handled by gradle.
     for easier file handling
 - webjars for bootstrap and jquery
 
-###Running
+### Running
 You can build or run the web application with the following commands in the projects root directory
 
 ```
@@ -81,7 +81,7 @@ Or by running NutcrackerApplication.java from your favorite ide.
 
 after which you can find the application running at http://localhost:8080/
 
-###Paths
+### Paths
 - /workshifts
     Displays daily Workshifts for each person
 - /persons
@@ -96,7 +96,7 @@ after which you can find the application running at http://localhost:8080/
 Each path also has sub path of /raw that just dumps the json data to your browser.
 
 
-###Tests
+### Tests
 There are some tests for checking that the data got parsed and calculated correctly and these tests use their own csv file located in \src\test\resources\testhours.csv.
 Run these tests with below command, there should be no output if they succeed currently.
 
@@ -110,7 +110,7 @@ These tests use the included testhours.csv by comparing the parsed data to handm
 There is also \src\test\java\com\marantle\nutcracker\RunSimpleTest.java which just outputs the monthly wages to console
 
 Also included is a data comparisons.xlsx for checking the data with manual calculations compared to the output got from the application.
-###Packages
+### Packages
 - /bootstrap
     Intializes the data when running the web application      
 - /configuration
